@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import {Templates} from "./lib/templates";
 import {env} from "./config/env";
-import PuppeteerHTMLPDF = require("puppeteer-html-pdf");
 import {sendMail} from "./lib/smtp";
 import {Attachment} from "nodemailer/lib/mailer";
+const { PuppeteerHTMLPDF } = require("puppeteer-html-pdf");
 
 @Injectable()
 export class AppService {
@@ -25,9 +25,17 @@ export class AppService {
       const html = template(formData)
 
       const htmlPDF = new PuppeteerHTMLPDF();
-      await htmlPDF.setOptions({format: 'A4', margin: { top: 35, bottom: 35, right: 35, left: 35 }});
+      const options = {
+        format: 'a4',
+        margin: {top: 35, bottom: 35, right: 35, left: 35},
+        executablePath: '/usr/bin/chromium'
+      }
+      if (env.CHROMIUM_PATH) {
+        options['executablePath'] = env.CHROMIUM_PATH;
+      }
+      await htmlPDF.setOptions(options);
       const pdfBuffer = await htmlPDF.create(html);
-      const pdfFileName = `<./out/${env.FORM_TEMPLATE_NAME}_${formData['ImeOtroka']}_${formData['PriimekOtroka']}.pdf>`;
+      const pdfFileName = `./out/${env.FORM_TEMPLATE_NAME}_${formData['ImeOtroka']}_${formData['PriimekOtroka']}.pdf`;
       console.log(pdfFileName);
       await htmlPDF.writeFile(pdfBuffer, pdfFileName);
 

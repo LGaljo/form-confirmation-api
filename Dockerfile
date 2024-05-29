@@ -20,6 +20,8 @@ WORKDIR /app
 
 COPY --from=builder --chown=node:node /app  .
 
+RUN apk add --no-cache chromium
+
 USER node
 
 ARG NODE_ENV=production
