@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import {Templates} from "./lib/templates";
 import {env} from "./config/env";
+const PuppeteerHTMLPDF = require("puppeteer-html-pdf");
 import {sendMail} from "./lib/smtp";
 import {Attachment} from "nodemailer/lib/mailer";
-const { PuppeteerHTMLPDF } = require("puppeteer-html-pdf");
 
 @Injectable()
 export class AppService {
