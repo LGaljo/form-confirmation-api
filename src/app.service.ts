@@ -28,7 +28,6 @@ export class AppService {
       const options = {
         format: 'a4',
         margin: {top: 35, bottom: 35, right: 35, left: 35},
-        executablePath: '/usr/bin/chromium'
       }
       if (env.CHROMIUM_PATH) {
         options['executablePath'] = env.CHROMIUM_PATH;
