@@ -17,6 +17,7 @@ export interface Env {
   MAIL_TEMPLATE_NAME: string;
   ICAL_EVENT: string;
   CHROMIUM_PATH: string;
+  PDF_OUTPUT_PATH: string;
 }
 
 dotenv.config();
@@ -37,4 +38,5 @@ export const env: Env = {
   MAIL_TEMPLATE_NAME: process.env['MAIL_TEMPLATE_NAME'],
   ICAL_EVENT: process.env['ICAL_EVENT'],
   CHROMIUM_PATH: process.env['CHROMIUM_PATH'],
+  PDF_OUTPUT_PATH: process.env['PDF_OUTPUT_PATH'],
 };

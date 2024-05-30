@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import {BadRequestException, Injectable, InternalServerErrorException} from '@nestjs/common';
 import {Templates} from "./lib/templates";
 import {env} from "./config/env";
 const PuppeteerHTMLPDF = require("puppeteer-html-pdf");
 import {sendMail} from "./lib/smtp";
 import {Attachment} from "nodemailer/lib/mailer";
+import * as path from "path";
 
 @Injectable()
 export class AppService {
@@ -20,7 +21,12 @@ export class AppService {
         }).join('');
         formData[n_key] = data[key]
       })
+    } catch (e) {
+      throw new BadRequestException('Unable to parse JSON body')
+    }
 
+    let pdfBuffer;
+    try {
       const template = Templates.getTemplate(env.FORM_TEMPLATE_PATH, env.FORM_TEMPLATE_NAME);
       const html = template(formData)
 
@@ -33,11 +39,16 @@ export class AppService {
         options['executablePath'] = env.CHROMIUM_PATH;
       }
       await htmlPDF.setOptions(options);
-      const pdfBuffer = await htmlPDF.create(html);
-      const pdfFileName = `./out/${env.FORM_TEMPLATE_NAME}_${formData['ImeOtroka']}_${formData['PriimekOtroka']}.pdf`;
-      console.log(pdfFileName);
-      await htmlPDF.writeFile(pdfBuffer, pdfFileName);
+      pdfBuffer = await htmlPDF.create(html);
+      const pdfPath = path.join(env.PDF_OUTPUT_PATH, `${env.FORM_TEMPLATE_NAME}_${formData['ImeOtroka']}_${formData['PriimekOtroka']}.pdf`);
+      console.log(pdfPath);
+      await htmlPDF.writeFile(pdfBuffer, pdfPath.toString());
+    } catch (err) {
+      console.log(err)
+      throw new InternalServerErrorException('Sth went wrong with pdf generation')
+    }
 
+    try {
       const mail_template = Templates.getTemplate(env.MAIL_TEMPLATE_PATH, env.MAIL_TEMPLATE_NAME);
       const mail_data = {}
 
@@ -52,7 +63,7 @@ export class AppService {
       //   ics = fs.readFileSync(env.ICAL_EVENT, {flag: 'r', encoding: 'utf-8'})
       // }
 
-      const recipients = [ formData['ElektronskiNaslovStarša1'] ];
+      const recipients = [formData['ElektronskiNaslovStarša1']];
       if (formData['ElektronskiNaslovStarša2']) {
         recipients.push(formData['ElektronskiNaslovStarša2'])
       }
@@ -71,10 +82,9 @@ export class AppService {
       //   }
       // }
       await sendMail(mail);
-
-    } catch (e) {
-      console.error(e)
+    } catch (err) {
+      console.log(err)
+      throw new InternalServerErrorException('Sth went wrong with sending an email')
     }
-    return
   }
 }
