@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  form-confirmation-api:
+    image: lgaljo/form-confirmation:latest
+    container_name: form-confirmation-api
+    ports:
+      - ${API_PORT_OUT}:${API_PORT}
+    environment:
+      - PORT=${API_PORT}
+      - HOST=${API_HOST}
+      - MAIL_HOST=${MAIL_HOST}
+      - MAIL_TEMPLATE_PATH=${MAIL_TEMPLATE_PATH}
+      - MAIL_TEMPLATE_NAME=${MAIL_TEMPLATE_NAME}
+      - FORM_TEMPLATE_PATH=${FORM_TEMPLATE_PATH}
+      - FORM_TEMPLATE_NAME=${FORM_TEMPLATE_NAME}
+      - MAIL_SENDER_NAME=${MAIL_SENDER_NAME}
+      - MAIL_PASSWORD=${MAIL_PASSWORD}
+      - MAIL_ADDRESS=${MAIL_ADDRESS}
+      - MAIL_PORT=${MAIL_PORT}
+      - CHROMIUM_PATH=${CHROMIUM_PATH}
+      - PDF_OUTPUT_PATH=${PDF_OUTPUT_PATH}
+    volumes:
+      - /volume1/docker/form-confirmations/templates:/app/src/templates:ro
+      - /volume1/docker/form-confirmations/out:/app/src/out:rw
