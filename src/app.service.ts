@@ -70,7 +70,7 @@ export class AppService {
       const mail = {
         from: `Rod Zelene Sreče Železniki <${env.MAIL_ADDRESS}>`,
         to: recipients.join(';'),
-        subject: 'Prijava na tabor Dolenja Trebuša',
+        subject: env.MAIL_SUBJECT,
         html: mail_template(mail_data),
         attachments: [attachment],
       }

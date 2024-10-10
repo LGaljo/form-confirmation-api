@@ -59,3 +59,4 @@ src/templates/*/*.html
 *.pdf
 *.ics
 tmp
+app.js

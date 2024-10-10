@@ -11,6 +11,7 @@ export interface Env {
   MAIL_ADDRESS: string;
   MAIL_PORT: number;
   MAIL_HOST: string;
+  MAIL_SUBJECT: string;
   FORM_TEMPLATE_PATH: string;
   FORM_TEMPLATE_NAME: string;
   MAIL_TEMPLATE_PATH: string;
@@ -32,6 +33,7 @@ export const env: Env = {
   MAIL_ADDRESS: process.env['MAIL_ADDRESS'],
   MAIL_PORT: Number(process.env['MAIL_PORT']),
   MAIL_HOST: process.env['MAIL_HOST'],
+  MAIL_SUBJECT: process.env['MAIL_SUBJECT'],
   FORM_TEMPLATE_PATH: process.env['FORM_TEMPLATE_PATH'],
   FORM_TEMPLATE_NAME: process.env['FORM_TEMPLATE_NAME'],
   MAIL_TEMPLATE_PATH: process.env['MAIL_TEMPLATE_PATH'],
