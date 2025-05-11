@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   form-confirmation-api:
     image: lgaljo/form-confirmation:latest

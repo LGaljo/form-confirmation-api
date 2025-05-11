@@ -31,6 +31,7 @@ export class AppService {
       const html = template(formData)
 
       const htmlPDF = new PuppeteerHTMLPDF();
+
       const options = {
         format: 'a4',
         margin: {top: 35, bottom: 35, right: 35, left: 35},
@@ -40,6 +41,7 @@ export class AppService {
         options['executablePath'] = env.CHROMIUM_PATH;
       }
       await htmlPDF.setOptions(options);
+
       pdfBuffer = await htmlPDF.create(html);
       const pdfPath = path.join(env.PDF_OUTPUT_PATH, `${env.FORM_TEMPLATE_NAME}_${formData['ImeOtroka']}_${formData['PriimekOtroka']}.pdf`);
       console.log(pdfPath);
