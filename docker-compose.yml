@@ -1,6 +1,8 @@
 services:
   form-confirmation-api:
-    image: lgaljo/form-confirmation:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: form-confirmation-api
     ports:
       - ${API_PORT_OUT}:${API_PORT}
@@ -19,6 +21,8 @@ services:
       - CHROMIUM_PATH=${CHROMIUM_PATH}
       - PDF_OUTPUT_PATH=${PDF_OUTPUT_PATH}
     volumes:
-      - templates:/app/src/templates/forms:ro
-      - mail:/app/src/templates/mail:ro
-      - out:/app/src/out:rw
+      - forms-volume:/app/src/templates:ro
+      - ./out:/app/src/out:rw
+
+volumes:
+  forms-volume:
