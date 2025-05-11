@@ -19,5 +19,6 @@ services:
       - CHROMIUM_PATH=${CHROMIUM_PATH}
       - PDF_OUTPUT_PATH=${PDF_OUTPUT_PATH}
     volumes:
-      - /volume1/docker/form-confirmations/templates:/app/src/templates:ro
-      - /volume1/docker/form-confirmations/out:/app/src/out:rw
+      - templates:/app/src/templates/forms:ro
+      - mail:/app/src/templates/mail:ro
+      - out:/app/src/out:rw
