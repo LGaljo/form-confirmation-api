@@ -23,10 +23,15 @@ export class Templates {
    * @memberof Templates
    */
   public static getTemplate(templateDir: string, templateName: string) {
-    templateDir = templateDir ?? (env.FORM_TEMPLATE_PATH || path.resolve(__dirname, '../templates'));
+    templateDir =
+      templateDir ??
+      (env.FORM_TEMPLATE_PATH || path.resolve(__dirname, '../templates'));
     if (!this.templates.hasOwnProperty(templateName)) {
       try {
-        const html = fs.readFileSync(path.resolve(`${templateDir}/${templateName}.html`), 'utf8');
+        const html = fs.readFileSync(
+          path.resolve(`${templateDir}/${templateName}.html`),
+          'utf8',
+        );
         this.templates[templateName] = handlebars.compile(html);
       } catch (err) {
         console.log(path.resolve(`./${templateName}.html`));

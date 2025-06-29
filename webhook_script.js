@@ -11,27 +11,26 @@ In the Script Editor:
     6. Click Save.
 */
 
-const POST_URL = "";
+const POST_URL = '';
 
 function onSubmit(e) {
-    const form = FormApp.getActiveForm();
-    const allResponses = form.getResponses();
-    const latestResponse = allResponses[allResponses.length - 1];
-    const response = latestResponse.getItemResponses();
-    const payload = {};
-    for (let i = 0; i < response.length; i++) {
-        const question = response[i].getItem().getTitle();
-        const answer = response[i].getResponse();
-        payload[question] = answer;
-    }
+  const form = FormApp.getActiveForm();
+  const allResponses = form.getResponses();
+  const latestResponse = allResponses[allResponses.length - 1];
+  const response = latestResponse.getItemResponses();
+  const payload = {};
+  for (let i = 0; i < response.length; i++) {
+    const question = response[i].getItem().getTitle();
+    const answer = response[i].getResponse();
+    payload[question] = answer;
+  }
 
-    const options = {
-        "method": "post",
-        "contentType": "application/json",
-        "payload": JSON.stringify(payload)
-    };
+  const options = {
+    method: 'post',
+    contentType: 'application/json',
+    payload: JSON.stringify(payload),
+  };
 
-    console.log(JSON.stringify(options))
-    UrlFetchApp.fetch(POST_URL, options);
+  console.log(JSON.stringify(options));
+  UrlFetchApp.fetch(POST_URL, options);
 }
-

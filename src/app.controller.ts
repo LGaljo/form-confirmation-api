@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Post, Req} from '@nestjs/common';
+import { Controller, Get, Post, Req } from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller()
@@ -7,7 +7,7 @@ export class AppController {
 
   @Get()
   simpleHello() {
-    return 'Hello from Forms Confirmation'
+    return 'Hello from Forms Confirmation';
   }
 
   @Post()

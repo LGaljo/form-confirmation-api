@@ -1,10 +1,15 @@
-import {BadRequestException, Injectable, InternalServerErrorException} from '@nestjs/common';
-import {Templates} from "./lib/templates";
-import {env} from "./config/env";
-const PuppeteerHTMLPDF = require("puppeteer-html-pdf");
-import {sendMail} from "./lib/smtp";
-import {Attachment} from "nodemailer/lib/mailer";
-import * as path from "path";
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
+import { Templates } from './lib/templates';
+import { env } from './config/env';
+import { sendMail } from './lib/smtp';
+import { Attachment } from 'nodemailer/lib/mailer';
+import * as path from 'path';
+
+const PuppeteerHTMLPDF = require('puppeteer-html-pdf');
 
 @Injectable()
 export class AppService {
@@ -12,49 +17,63 @@ export class AppService {
     const formData = {};
     try {
       Object.keys(data).forEach((key) => {
-        let n_key = key.replace(/[^a-zA-Z0-9pćčšžđŠČĆŽĐ ]+|[ ]{2}/g,"").trim();
-        n_key = n_key.split(' ').map(c => {
-          if (!!c) {
-            return c[0].toUpperCase() + c.substring(1)
-          }
-          return '';
-        }).join('');
-        formData[n_key] = data[key]
-      })
+        let n_key = key.replace(/[^a-zA-Z0-9pćčšžđŠČĆŽĐ ]+|[ ]{2}/g, '').trim();
+        n_key = n_key
+          .split(' ')
+          .map((c) => {
+            if (!!c) {
+              return c[0].toUpperCase() + c.substring(1);
+            }
+            return '';
+          })
+          .join('');
+        formData[n_key] = data[key];
+      });
     } catch (e) {
-      throw new BadRequestException('Unable to parse JSON body')
+      throw new BadRequestException('Unable to parse JSON body');
     }
 
     let pdfBuffer;
     try {
-      const template = Templates.getTemplate(env.FORM_TEMPLATE_PATH, env.FORM_TEMPLATE_NAME);
-      const html = template(formData)
+      const template = Templates.getTemplate(
+        env.FORM_TEMPLATE_PATH,
+        env.FORM_TEMPLATE_NAME,
+      );
+      const html = template(formData);
 
       const htmlPDF = new PuppeteerHTMLPDF();
 
       const options = {
         format: 'a4',
-        margin: {top: 35, bottom: 35, right: 35, left: 35},
+        margin: { top: 35, bottom: 35, right: 35, left: 35 },
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
         headless: 'new',
-      }
+      };
       if (env.CHROMIUM_PATH) {
         options['executablePath'] = env.CHROMIUM_PATH;
       }
       await htmlPDF.setOptions(options);
 
       pdfBuffer = await htmlPDF.create(html);
-      const pdfPath = path.join(env.PDF_OUTPUT_PATH, `${env.FORM_TEMPLATE_NAME}_${formData['ImeOtroka']}_${formData['PriimekOtroka']}.pdf`);
+      const pdfPath = path.join(
+        env.PDF_OUTPUT_PATH,
+        `${env.FORM_TEMPLATE_NAME}_${formData['ImeOtroka']}_${formData['PriimekOtroka']}.pdf`,
+      );
       console.log(pdfPath);
       await htmlPDF.writeFile(pdfBuffer, pdfPath.toString());
     } catch (err) {
-      console.log(err)
-      throw new InternalServerErrorException('Sth went wrong with pdf generation')
+      console.log(err);
+      throw new InternalServerErrorException(
+        'Sth went wrong with pdf generation',
+      );
     }
 
     try {
-      const mail_template = Templates.getTemplate(env.MAIL_TEMPLATE_PATH, env.MAIL_TEMPLATE_NAME);
-      const mail_data = {}
+      const mail_template = Templates.getTemplate(
+        env.MAIL_TEMPLATE_PATH,
+        env.MAIL_TEMPLATE_NAME,
+      );
+      const mail_data = {};
 
       const attachment: Attachment = {
         filename: `${env.FORM_TEMPLATE_NAME}_${formData['ImeOtroka']}_${formData['PriimekOtroka']}.pdf`,
@@ -69,15 +88,15 @@ export class AppService {
 
       const recipients = [formData['ElektronskiNaslovStarša1']];
       if (formData['ElektronskiNaslovStarša2']) {
-        recipients.push(formData['ElektronskiNaslovStarša2'])
+        recipients.push(formData['ElektronskiNaslovStarša2']);
       }
       const mail = {
-        from: `Rod Zelene Sreče Železniki <${env.MAIL_ADDRESS}>`,
+        from: `Rod Zelene Sreče Železniki <${env.MAIL_SENDER_EMAIL}>`,
         to: recipients.join(';'),
         subject: env.MAIL_SUBJECT,
         html: mail_template(mail_data),
         attachments: [attachment],
-      }
+      };
       // if (env.ICAL_EVENT && ics) {
       //   mail['icalEvent'] = {
       //     filename: 'invitation.ics',
@@ -87,8 +106,10 @@ export class AppService {
       // }
       await sendMail(mail);
     } catch (err) {
-      console.log(err)
-      throw new InternalServerErrorException('Sth went wrong with sending an email')
+      console.log(err);
+      throw new InternalServerErrorException(
+        'Sth went wrong with sending an email',
+      );
     }
   }
 }
