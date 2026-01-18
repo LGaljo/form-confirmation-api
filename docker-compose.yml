@@ -3,6 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    pull_policy: build
     container_name: form-confirmation-api
     restart: unless-stopped
     ports:
