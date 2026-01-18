@@ -35,7 +35,7 @@ export const env: Env = {
   MAIL_PASSWORD: process.env['MAIL_PASSWORD'],
   MAIL_ADDRESS: process.env['MAIL_ADDRESS'],
   MAIL_PORT: Number(process.env['MAIL_PORT']),
-  MAIL_SECURE: Boolean(process.env['MAIL_SECURE']),
+  MAIL_SECURE: process.env['MAIL_SECURE'] === 'true',
   MAIL_HOST: process.env['MAIL_HOST'],
   MAIL_SUBJECT: process.env['MAIL_SUBJECT'],
   FORM_TEMPLATE_PATH: process.env['FORM_TEMPLATE_PATH'],
