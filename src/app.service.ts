@@ -91,7 +91,7 @@ export class AppService {
         recipients.push(formData['ElektronskiNaslovStarša2']);
       }
       const mail = {
-        from: `Rod Zelene Sreče Železniki <${env.MAIL_SENDER_EMAIL}>`,
+        from: `${env.MAIL_SENDER_NAME} <${env.MAIL_SENDER_EMAIL}>`,
         to: recipients.join(';'),
         subject: env.MAIL_SUBJECT,
         html: mail_template(mail_data),
