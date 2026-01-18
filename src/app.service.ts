@@ -97,6 +97,7 @@ export class AppService {
         html: mail_template(mail_data),
         attachments: [attachment],
       };
+      console.log(mail);
       // if (env.ICAL_EVENT && ics) {
       //   mail['icalEvent'] = {
       //     filename: 'invitation.ics',
